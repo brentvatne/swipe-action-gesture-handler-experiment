@@ -1,22 +1,50 @@
 import React from 'react';
 import { Button, ScrollView, Text, StyleSheet, View } from 'react-native';
-import { LongPressGestureHandler } from 'react-native-gesture-handler';
+import { ScrollView as GestureHandlerScrollView } from 'react-native-gesture-handler';
 import CommentListItem from './CommentListItem';
 import Comments from './Comments';
 import PanResponderSwipeActions from 'react-native-swipeout';
 import GestureHandlerSwipeActions from './SwipeActions';
+import Snappable from './Snappable';
+
+const DEBUG = false;
 
 export default class App extends React.Component {
   state = {
     api: 'gesture-handler',
+    comments: Comments.map((c, i) => {
+      c.gestureId = `swipe-action-${i}`;
+      return c;
+    }),
   };
 
   render() {
+    const ScrollViewComponent =
+      this.state.api === 'gesture-handler'
+        ? GestureHandlerScrollView
+        : ScrollView;
+
+    const extraScrollViewProps =
+      this.state.api === 'gesture-handler'
+        ? { waitFor: this.state.comments.map(c => c.gestureId) }
+        : {};
+
     return (
       <View style={{ flex: 1, paddingTop: 25, paddingBottom: 50 }}>
-        <ScrollView style={{ flex: 1 }}>
-          {Comments.map(this._renderComment)}
-        </ScrollView>
+        {DEBUG
+          ? <GestureHandlerScrollView style={{ flex: 1 }} id="scroll">
+              <Snappable
+                id="snap"
+                shouldCancelWhenOutside
+                minDistX={500}
+                simultaneousHandlers="scroll">
+                {this.state.comments.map(this._renderComment)}
+              </Snappable>
+            </GestureHandlerScrollView>
+          : <ScrollViewComponent style={{ flex: 1 }} {...extraScrollViewProps}>
+              {this.state.comments.map(this._renderComment)}
+            </ScrollViewComponent>}
+
         <View style={styles.underlay} />
         <View style={styles.toggleContainer}>
           <Button
@@ -41,14 +69,17 @@ export default class App extends React.Component {
     const buttons = this._getButtons(comment);
 
     if (this.state.api === 'gesture-handler') {
-      return (
-        <GestureHandlerSwipeActions key={i}>
-          <CommentListItem {...comment} />
-        </GestureHandlerSwipeActions>
-      );
+      return DEBUG
+        ? <CommentListItem {...comment} key={i} />
+        : <GestureHandlerSwipeActions key={i} gestureId={comment.gestureId}>
+            <CommentListItem {...comment} />
+          </GestureHandlerSwipeActions>;
     } else {
       return (
-        <PanResponderSwipeActions key={i} backgroundColor="black" right={buttons}>
+        <PanResponderSwipeActions
+          key={i}
+          backgroundColor="black"
+          right={buttons}>
           <CommentListItem {...comment} />
         </PanResponderSwipeActions>
       );
