@@ -12,10 +12,7 @@ const DEBUG = false;
 export default class App extends React.Component {
   state = {
     api: 'gesture-handler',
-    comments: Comments.map((c, i) => {
-      c.gestureId = `swipe-action-${i}`;
-      return c;
-    }),
+    comments: Comments,
   };
 
   render() {
@@ -24,14 +21,9 @@ export default class App extends React.Component {
         ? GestureHandlerScrollView
         : ScrollView;
 
-    const extraScrollViewProps =
-      this.state.api === 'gesture-handler'
-        ? { waitFor: this.state.comments.map(c => c.gestureId) }
-        : {};
-
     return (
       <View style={{ flex: 1, paddingTop: 25, paddingBottom: 50 }}>
-        <ScrollViewComponent style={{ flex: 1 }} {...extraScrollViewProps}>
+        <ScrollViewComponent style={{ flex: 1 }}>
           {this.state.comments.map(this._renderComment)}
         </ScrollViewComponent>
 
@@ -62,7 +54,6 @@ export default class App extends React.Component {
       return (
         <GestureHandlerSwipeActions
           key={i}
-          gestureId={comment.gestureId}
           style={{backgroundColor: 'black'}}
           right={buttons}>
           <CommentListItem {...comment} />
