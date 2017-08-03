@@ -40,9 +40,7 @@ export default class SwipeActions extends React.Component {
           {this._renderButtons()}
         </View>
         <PanGestureHandler
-          id={this.props.gestureId}
           minDeltaX={10}
-          maxDeltaY={5}
           onGestureEvent={this._onGestureEvent}
           onHandlerStateChange={this._onHandlerStateChange}>
           <Animated.View style={{ transform: [{ translateX: translateX }] }}>
@@ -105,6 +103,7 @@ export default class SwipeActions extends React.Component {
       <RectButton
         key={i}
         onPress={button.onPress}
+        disallowInterruption
         style={[
           styles.button,
           { backgroundColor: button.backgroundColor || '#ccc' },
