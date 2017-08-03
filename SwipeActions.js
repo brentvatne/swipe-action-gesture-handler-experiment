@@ -10,7 +10,8 @@ const ScreenWidth = Dimensions.get('window').width;
 const ActionsVisibleX = -200;
 const ActionsHiddenX = 0;
 
-/* NOTE(brent): have to disable this because of bug on iOS, ask me for info or just try it */
+/* NOTE(brent): have to disable this because jittery animation on iOS and Android
+ * when you release gesture, ask me for info or just try it */
 const USE_NATIVE_DRIVER = false;
 
 export default class SwipeActions extends React.Component {

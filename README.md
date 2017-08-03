@@ -1,7 +1,8 @@
-Experiment to implement row swipe actions using
-react-native-gesture-handler.
+✅ Successful experiment to implement row swipe actions using
+[react-native-gesture-handler](https://github.com/kmagiera/react-native-gesture-handler).
 
-- Currently requires this patch:
-https://github.com/kmagiera/react-native-gesture-handler/pull/6 -- and
-only works on alpha.2, I believe due to this change:
-https://github.com/kmagiera/react-native-gesture-handler/commit/2d330dbe94df03e8c96157298d4788e62174d361
+Advantages over `PanResponder` in this case:
+- Can use native `Animated` driver to update values in response to
+gesture, so you don't drop frames if JS frame is choked during gesture.
+- Uses native gesture recognizers and does the right thing inside of a
+ScrollView -- no manual ScrollView locking required. This is huge.

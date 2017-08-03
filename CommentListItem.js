@@ -16,7 +16,7 @@ type CommentT = {
     title: string
   },
   User: {
-    username: string    
+    username: string
   }
 }
 
