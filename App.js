@@ -1,5 +1,12 @@
 import React from 'react';
-import { Button, ScrollView, Text, StyleSheet, View } from 'react-native';
+import {
+  Button,
+  ScrollView,
+  Platform,
+  Text,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { ScrollView as GestureHandlerScrollView } from 'react-native-gesture-handler';
 import CommentListItem from './CommentListItem';
 import Comments from './Comments';
@@ -21,12 +28,17 @@ export default class App extends React.Component {
         : ScrollView;
 
     return (
-      <View style={{ flex: 1, paddingTop: 25, paddingBottom: 50 }}>
+      <View
+        style={{
+          flex: 1,
+          paddingTop: Platform.OS === 'ios' ? 25 : 0,
+          paddingBottom: 50,
+        }}>
         <ScrollViewComponent style={{ flex: 1 }}>
           {this.state.comments.map(this._renderComment)}
         </ScrollViewComponent>
 
-        <View style={styles.underlay} />
+        {Platform.OS === 'ios' && <View style={styles.underlay} />}
         <View style={styles.toggleContainer}>
           <Button
             title={
@@ -53,7 +65,7 @@ export default class App extends React.Component {
       return (
         <GestureHandlerSwipeActions
           key={i}
-          style={{backgroundColor: 'black'}}
+          style={{ backgroundColor: 'black' }}
           right={buttons}>
           <CommentListItem {...comment} />
         </GestureHandlerSwipeActions>
