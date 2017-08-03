@@ -35,7 +35,9 @@ export default class CommentListItem extends React.PureComponent {
             {comment.content}
           </Text>
 
-          <BorderlessButton onPress={() => alert('user!')} style={styles.innerButton}>
+          <BorderlessButton
+            onPress={() => alert('user!')}
+            style={{ marginTop: 15 }}>
             <Text style={styles.lockup}>
               💬 by <Text style={styles.bold}>
                 {comment.User.username}
@@ -44,7 +46,9 @@ export default class CommentListItem extends React.PureComponent {
             </Text>
           </BorderlessButton>
 
-          <BorderlessButton onPress={() => alert('post!')}>
+          <BorderlessButton
+            onPress={() => alert('post!')}
+            style={{ marginTop: 5 }}>
             <Text style={styles.response}>
               📮 in response to{' '}
               <Text style={styles.bold}>{comment.Post.title}</Text>
@@ -93,9 +97,6 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 18,
     backgroundColor: 'transparent',
-  },
-  innerButton: {
-    marginTop: 16,
   },
   bold: {
     fontWeight: '600',
