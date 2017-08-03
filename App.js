@@ -31,19 +31,9 @@ export default class App extends React.Component {
 
     return (
       <View style={{ flex: 1, paddingTop: 25, paddingBottom: 50 }}>
-        {DEBUG
-          ? <GestureHandlerScrollView style={{ flex: 1 }} id="scroll">
-              <Snappable
-                id="snap"
-                shouldCancelWhenOutside
-                minDistX={500}
-                simultaneousHandlers="scroll">
-                {this.state.comments.map(this._renderComment)}
-              </Snappable>
-            </GestureHandlerScrollView>
-          : <ScrollViewComponent style={{ flex: 1 }} {...extraScrollViewProps}>
-              {this.state.comments.map(this._renderComment)}
-            </ScrollViewComponent>}
+        <ScrollViewComponent style={{ flex: 1 }} {...extraScrollViewProps}>
+          {this.state.comments.map(this._renderComment)}
+        </ScrollViewComponent>
 
         <View style={styles.underlay} />
         <View style={styles.toggleContainer}>
@@ -69,11 +59,15 @@ export default class App extends React.Component {
     const buttons = this._getButtons(comment);
 
     if (this.state.api === 'gesture-handler') {
-      return DEBUG
-        ? <CommentListItem {...comment} key={i} />
-        : <GestureHandlerSwipeActions key={i} gestureId={comment.gestureId}>
-            <CommentListItem {...comment} />
-          </GestureHandlerSwipeActions>;
+      return (
+        <GestureHandlerSwipeActions
+          key={i}
+          gestureId={comment.gestureId}
+          style={{backgroundColor: 'black'}}
+          right={buttons}>
+          <CommentListItem {...comment} />
+        </GestureHandlerSwipeActions>
+      );
     } else {
       return (
         <PanResponderSwipeActions
