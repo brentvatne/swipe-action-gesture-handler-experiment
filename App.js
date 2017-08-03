@@ -5,7 +5,6 @@ import CommentListItem from './CommentListItem';
 import Comments from './Comments';
 import PanResponderSwipeActions from 'react-native-swipeout';
 import GestureHandlerSwipeActions from './SwipeActions';
-import Snappable from './Snappable';
 
 const DEBUG = false;
 
