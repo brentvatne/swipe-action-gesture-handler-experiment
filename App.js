@@ -88,7 +88,7 @@ export default class App extends React.Component {
       buttons.push({
         autoClose: true,
         backgroundColor: 'blue',
-        onPress: () => this._handleViewPost(comment.postId),
+        onPress: () => alert('view!'),
         component: (
           <View style={styles.button}>
             <Text style={styles.buttonText}>View 📝</Text>
@@ -144,5 +144,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlignVertical: 'center',
     textAlign: 'center',
+    backgroundColor: 'transparent',
   },
 });

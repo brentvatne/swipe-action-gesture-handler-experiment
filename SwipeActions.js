@@ -1,6 +1,10 @@
 import React from 'react';
 import { Animated, Dimensions, StyleSheet, View } from 'react-native';
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import {
+  PanGestureHandler,
+  RectButton,
+  State,
+} from 'react-native-gesture-handler';
 
 const ScreenWidth = Dimensions.get('window').width;
 const ActionsVisibleX = -200;
@@ -15,7 +19,6 @@ export default class SwipeActions extends React.Component {
   };
 
   _lastOffsetX = 0;
-
   _onGestureEvent = Animated.event(
     [{ nativeEvent: { translationX: this.state._translateX } }],
     { useNativeDriver: USE_NATIVE_DRIVER }
@@ -26,22 +29,26 @@ export default class SwipeActions extends React.Component {
   }
 
   render() {
-    const translateX = this.state._translateX;
+    const translateX = this.state._translateX.interpolate({
+      inputRange: [-ScreenWidth, 0, 200],
+      outputRange: [-ScreenWidth, 0, 20],
+    });
 
     return (
       <View style={[styles.container, this.props.style]}>
+        <View style={styles.buttonContainer}>
+          {this._renderButtons()}
+        </View>
         <PanGestureHandler
           id={this.props.gestureId}
           minDeltaX={10}
           maxDeltaY={5}
           onGestureEvent={this._onGestureEvent}
           onHandlerStateChange={this._onHandlerStateChange}>
-          <Animated.View style={{ transform: [{ translateX: translateX }] }} >
+          <Animated.View style={{ transform: [{ translateX: translateX }] }}>
             {this.props.children}
           </Animated.View>
         </PanGestureHandler>
-
-        {this._renderButtons()}
       </View>
     );
   }
@@ -77,7 +84,7 @@ export default class SwipeActions extends React.Component {
       Animated.spring(this.state._translateX, {
         velocity: nativeEvent.velocityX,
         tension: 68,
-        friction: 10,
+        friction: 12,
         toValue,
         useNativeDriver: USE_NATIVE_DRIVER,
       }).start(() => {
@@ -90,16 +97,39 @@ export default class SwipeActions extends React.Component {
   };
 
   _renderButtons = () => {
-    return this.props.buttons && this.props.buttons.map(this._renderButton);
+    return this.props.right && this.props.right.map(this._renderButton);
   };
 
-  _renderButton = (button) => {
-    return null;
-  }
+  _renderButton = (button, i) => {
+    return (
+      <RectButton
+        key={i}
+        onPress={button.onPress}
+        style={[
+          styles.button,
+          { backgroundColor: button.backgroundColor || '#ccc' },
+        ]}>
+        {button.component}
+      </RectButton>
+    );
+  };
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#888',
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 0,
+    top: 0,
+    right: 0,
+    left: 0,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    flexGrow: 1,
+  },
+  button: {
+    width: 100,
   },
 });
