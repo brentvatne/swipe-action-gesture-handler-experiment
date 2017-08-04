@@ -36,6 +36,7 @@ export default class CommentListItem extends React.PureComponent {
           </Text>
 
           <BorderlessButton
+            borderless={false}
             onPress={() => alert('user!')}
             style={{ marginTop: 15 }}>
             <Text style={styles.lockup}>
@@ -47,6 +48,7 @@ export default class CommentListItem extends React.PureComponent {
           </BorderlessButton>
 
           <BorderlessButton
+            borderless={false}
             onPress={() => alert('post!')}
             style={{ marginTop: 5 }}>
             <Text style={styles.response}>

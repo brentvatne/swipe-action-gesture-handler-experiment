@@ -10,29 +10,24 @@ const ScreenWidth = Dimensions.get('window').width;
 const ActionsVisibleX = -200;
 const ActionsHiddenX = 0;
 
-/* NOTE(brent): have to disable this because jittery animation on iOS and Android
- * when you release gesture, ask me for info or just try it */
-const USE_NATIVE_DRIVER = false;
+const USE_NATIVE_DRIVER = true;
 
 export default class SwipeActions extends React.Component {
   state = {
     _translateX: new Animated.Value(0),
+    _dragX: new Animated.Value(0),
   };
 
-  _lastOffsetX = 0;
+  _actionsHidden = true;
   _onGestureEvent = Animated.event(
-    [{ nativeEvent: { translationX: this.state._translateX } }],
+    [{ nativeEvent: { translationX: this.state._dragX } }],
     { useNativeDriver: USE_NATIVE_DRIVER }
   );
 
-  componentWillMount() {
-    console.log(Object.keys(this._onGestureEvent));
-  }
-
   render() {
-    const translateX = this.state._translateX.interpolate({
-      inputRange: [-ScreenWidth, 0, 200],
-      outputRange: [-ScreenWidth, 0, 20],
+    const translateX = Animated.add(this.state._dragX, this.state._translateX).interpolate({
+      inputRange: [2 * ActionsVisibleX, ActionsVisibleX, 0, 200],
+      outputRange: [1.4 * ActionsVisibleX, ActionsVisibleX, 0, 20],
     });
 
     return (
@@ -52,46 +47,41 @@ export default class SwipeActions extends React.Component {
     );
   }
 
-  _areActionsVisible = () => {
-    return !this._areActionsHidden();
-  };
-
-  _areActionsHidden = () => {
-    return this._lastOffsetX === 0;
-  };
-
   _onHandlerStateChange = ({ nativeEvent }) => {
     if (nativeEvent.oldState === State.ACTIVE) {
       const { velocityX, translationX, x } = nativeEvent;
-      let toValue;
-      if (this._areActionsHidden()) {
-        if (velocityX < -50 || translationX < -100 /* Should we show it? */) {
-          toValue = ActionsVisibleX;
-        } else {
-          /* Otherwise, keep it hidden */
-          toValue = 0;
-        }
-      } else if (this._areActionsVisible()) {
-        if (velocityX > 20 || translationX > 20 /* Should we hide it? */) {
-          toValue = -ActionsVisibleX;
-        } else {
-          /* Otherwise, keep it open */
-          toValue = 0;
-        }
+      const dragToss = 0.05;
+      const endOffsetX = translationX + dragToss * velocityX;
+
+      let toValue = 0;
+      let hideActions = true;
+      if (this._actionsHidden && endOffsetX < -100 /* Should we show it? */) {
+        toValue = ActionsVisibleX;
+        hideActions = false;
+      } else if (!this._actionsHidden && endOffsetX < 100 /* Should we keep them open? */) {
+        toValue = ActionsVisibleX;
+        hideActions = false;
       }
+      this._actionsHidden = hideActions;
+
+      // Pan is finished, we need to set dragX value to 0 as when the pan starts for the
+      // next time it will start from 0. Since x translation of the views is the sum of
+      // dragX and translateX values, we need to add the value of dragX to the current
+      // value of translateX first. As we don't know the current value of translateX
+      // (it could run using native driver) this can be done by calling a sequence of
+      // methods: `extractOffset` -> `setValue` -> `flattenOffset`
+      this.state._translateX.extractOffset();
+      this.state._translateX.setValue(translationX);
+      this.state._translateX.flattenOffset();
+      this.state._dragX.setValue(0);
 
       Animated.spring(this.state._translateX, {
-        velocity: nativeEvent.velocityX,
+        velocity: velocityX,
         tension: 68,
         friction: 12,
         toValue,
         useNativeDriver: USE_NATIVE_DRIVER,
-      }).start(() => {
-        console.log({ toValue, _lastOffsetX: this._lastOffsetX });
-        this._lastOffsetX += toValue;
-        this.state._translateX.setOffset(this._lastOffsetX);
-        this.state._translateX.setValue(0);
-      });
+      }).start();
     }
   };
 
