@@ -3202,9 +3202,9 @@ react-devtools-core@2.3.1:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
-react-native-gesture-handler@^1.0.0-alpha.7:
-  version "1.0.0-alpha.7"
-  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.0.0-alpha.7.tgz#7bbcd7d687269bb1fe0ac38e6bc8ac74e56c68bc"
+react-native-gesture-handler@^1.0.0-alpha.9:
+  version "1.0.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.0.0-alpha.9.tgz#87a9b1e29cab815194dc3b039fffb30b08813055"
 
 react-native-swipeout@^2.2.2:
   version "2.2.2"
