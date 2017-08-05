@@ -36,7 +36,7 @@ export default class SwipeActions extends React.Component {
           {this._renderButtons()}
         </View>
         <PanGestureHandler
-          minDeltaX={10}
+          minDeltaX={30}
           onGestureEvent={this._onGestureEvent}
           onHandlerStateChange={this._onHandlerStateChange}>
           <Animated.View style={{ transform: [{ translateX: translateX }] }}>
@@ -76,8 +76,7 @@ export default class SwipeActions extends React.Component {
       this.state._dragX.setValue(0);
 
       Animated.spring(this.state._translateX, {
-        velocity: velocityX,
-        tension: 68,
+        tension: 90,
         friction: 12,
         toValue,
         useNativeDriver: USE_NATIVE_DRIVER,
