@@ -48,6 +48,7 @@ export default class SwipeActions extends React.Component {
   }
 
   _onHandlerStateChange = ({ nativeEvent }) => {
+    console.log(`From ${gestureStateFromEnum(nativeEvent.oldState)} to ${gestureStateFromEnum(nativeEvent.state)}`);
     if (nativeEvent.oldState === State.ACTIVE) {
       const { velocityX, translationX, x } = nativeEvent;
       const dragToss = 0.05;
@@ -75,6 +76,7 @@ export default class SwipeActions extends React.Component {
       this.state._translateX.flattenOffset();
       this.state._dragX.setValue(0);
 
+      console.warn(velocityX);
       Animated.spring(this.state._translateX, {
         tension: 90,
         friction: 12,
@@ -102,6 +104,25 @@ export default class SwipeActions extends React.Component {
       </RectButton>
     );
   };
+}
+
+function gestureStateFromEnum(s) {
+  switch (s) {
+    case State.UNDETERMINED:
+      return 'UNDETERMINED';
+    case State.BEGAN:
+      return 'BEGAN';
+    case State.FAILED:
+      return 'FAILED';
+    case State.CANCELLED:
+      return 'CANCELLED';
+    case State.ACTIVE:
+      return 'ACTIVE';
+    case State.END:
+      return 'END';
+    default:
+      return `Invalid gesture state: ${s}`;
+  }
 }
 
 const styles = StyleSheet.create({
