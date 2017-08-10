@@ -76,7 +76,6 @@ export default class SwipeActions extends React.Component {
       this.state._translateX.flattenOffset();
       this.state._dragX.setValue(0);
 
-      console.warn(velocityX);
       Animated.spring(this.state._translateX, {
         tension: 90,
         friction: 12,
